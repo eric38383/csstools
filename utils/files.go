@@ -7,10 +7,8 @@ import (
 	"strings"
 )
 
-type DigitalStorageCoversion struct {
-	KB float64
-	MB float64
-}
+const bytesToKB = 0.001
+const bytestoMB = 0.0000001
 
 type FileSize struct {
 	Name string
@@ -25,8 +23,6 @@ type DirectorySize struct {
 	TotalMB float64
 }
 
-var convert = DigitalStorageCoversion{KB: 0.001, MB: 0.0000001}
-
 func GetFileSize(file *os.File) int64 {
 	info, _ := file.Stat()
 	size := info.Size()
@@ -35,8 +31,8 @@ func GetFileSize(file *os.File) int64 {
 
 func ConvertFileSize(bytes int64) (float64, float64) {
 	bytesFloat := float64(bytes)
-	KB := bytesFloat * convert.KB
-	MB := bytesFloat * convert.MB
+	KB := bytesFloat * bytesToKB
+	MB := bytesFloat * bytestoMB
 	return KB, MB
 }
 
