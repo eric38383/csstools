@@ -20,8 +20,8 @@ var fileSizeCmd = &cobra.Command{
 	Short: "Get size of each file by extension and total size of directory by extension",
 	Run: func(cmd *cobra.Command, args []string) {
 		ext, _ := cmd.Flags().GetString("ext")
-		if ext != ".scss" {
-			fmt.Println("This process is currently only setup to check SASS files. Please use .scss")
+		if ext != ".scss" && ext != ".css" {
+			fmt.Println("This process is currently only setup to check CSS/SASS files. Please use .css or .scss")
 			return
 		}
 		output := utils.GetFileSizeByExt(ext)
