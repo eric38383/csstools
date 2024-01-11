@@ -1,2 +1,2 @@
-/tests
-/cmd/checkDups.go
+/test_fixtures
+/cmd/checkdups.go
