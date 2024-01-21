@@ -79,18 +79,12 @@ func (parser *Parser) Stylesheet() []Rule {
 // Returns all tokens as string from start to end
 func (parser *Parser) SkipTo(stop string) string {
 	var value string
-	var index = 0
 	for {
 		token := parser.scanner.Next()
-
 		if token.Value == stop {
 			break
 		}
 		value += token.Value
-		if index == 25 {
-			break
-		}
-		index += 1
 	}
 	return value
 }
