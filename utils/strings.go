@@ -1,8 +1,13 @@
 package utils
 
-import "strings"
+import (
+	"strings"
+)
 
-func GetBetweenTwoChars(str string, startChar string, endChar string) []string {
+func GetStringBetweenChars(str string, startChar string, endChar string) []string {
+	if startChar == "" || endChar == "" {
+		return nil
+	}
 	start := strings.Index(str, startChar)
 	if start == -1 {
 		return nil
@@ -13,5 +18,5 @@ func GetBetweenTwoChars(str string, startChar string, endChar string) []string {
 		return nil
 	}
 
-	return append([]string{newS[:end]}, GetBetweenTwoChars(newS[end+1:], startChar, endChar)...)
+	return append([]string{newS[:end]}, GetStringBetweenChars(newS[end+1:], startChar, endChar)...)
 }

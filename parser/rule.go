@@ -1,6 +1,8 @@
 package parser
 
-import "strings"
+import (
+	"strings"
+)
 
 // var selectorType = []string{
 // 	"attribute",
@@ -44,8 +46,8 @@ type Rule struct {
 	Name         string
 	Declarations []Declaration
 	AtRule       bool
-	minwidth     string
-	maxwidth     string
+	Minwidth     string
+	Maxwidth     string
 }
 
 type Declaration struct {
@@ -60,7 +62,6 @@ func ParseRule(ruleblock []string, atRule bool, minwidth string, maxwidth string
 		var rulename string
 		for index, char := range ruleStr {
 			var s = string(char)
-			rulename += s
 			if s == "{" {
 				declarations := ParseDeclaration(ruleStr[index+1:])
 				rulename = strings.TrimSpace(rulename)
@@ -72,12 +73,13 @@ func ParseRule(ruleblock []string, atRule bool, minwidth string, maxwidth string
 					Name:         rulename,
 					Declarations: declarations,
 					AtRule:       atRule,
-					minwidth:     minwidth,
-					maxwidth:     maxwidth,
+					Minwidth:     minwidth,
+					Maxwidth:     maxwidth,
 				}
 				rules = append(rules, rule)
 				break
 			}
+			rulename += s
 		}
 	}
 	return rules
@@ -85,21 +87,39 @@ func ParseRule(ruleblock []string, atRule bool, minwidth string, maxwidth string
 
 func ParseDeclaration(ruleStr string) []Declaration {
 	declarationMap := make(map[string]string)
-	var isKey bool
+	var isKey bool = true
 	var key string
 	var value string
+
+	reset := func() {
+		//
+		isKey = true
+		key = strings.TrimSpace(key)
+		value = strings.TrimSpace(value)
+		declarationMap[key] = value
+		key = ""
+		value = ""
+	}
+
 	for _, char := range ruleStr {
 		var s = string(char)
 		if s == ":" {
 			isKey = false
+			continue
+		}
+		if s == "}" {
+			// A semicolon is not required in the last declaration of a rule
+
+			// When key are value are empty, we end the loop because its the end
+			// of the rule block and there is no final rule
+			if key == "" || value == "" {
+				break
+			}
+			reset()
+			break
 		}
 		if s == ";" {
-			isKey = true
-			key = strings.TrimSpace(key)
-			value = strings.TrimSpace(value)
-			declarationMap[key] = value
-			key = ""
-			value = ""
+			reset()
 			continue
 		}
 		if isKey {
@@ -107,11 +127,7 @@ func ParseDeclaration(ruleStr string) []Declaration {
 		} else {
 			value += s
 		}
-		if s == "}" {
-			break
-		}
 	}
-	declarationMap[key] = value
 	var declarations []Declaration
 	for k, v := range declarationMap {
 		d := Declaration{Property: k, Value: v}

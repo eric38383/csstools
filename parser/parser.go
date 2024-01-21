@@ -44,7 +44,7 @@ func (parser *Parser) Stylesheet() []Rule {
 			} else if token.Value == "@media" {
 				//there are other nested rules but we'll handle it later
 				var mediaStr = parser.SkipTo("{")
-				var widths = utils.GetBetweenTwoChars(mediaStr, "(", ")")
+				var widths = utils.GetStringBetweenChars(mediaStr, "(", ")")
 				for _, s := range widths {
 					var splitRule = strings.Split(s, ":")
 					var key = strings.TrimSpace(splitRule[0])
