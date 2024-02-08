@@ -36,7 +36,7 @@ func ConvertFileSize(bytes int64) (float64, float64) {
 	return KB, MB
 }
 
-func GetPathFromCurrent(path string) string {
+func GetPathFromCWD(path string) string {
 	cwd, _ := os.Getwd()
 	fromCwd := strings.ReplaceAll(path, cwd, "")
 	return fromCwd
@@ -62,11 +62,11 @@ func GetFileSizeByExt(ext string) map[string]DirectorySize {
 	var paths []string = GetFilePathsByExt(ext)
 	for _, path := range paths {
 		dir := filepath.Dir(path)
-		fromCwd := GetPathFromCurrent(dir)
+		fromCwd := GetPathFromCWD(dir)
 		file, _ := os.Open(path)
 		bytes := GetFileSize(file)
 		KB, MB := ConvertFileSize(bytes)
-		filename := GetPathFromCurrent(file.Name())
+		filename := GetPathFromCWD(file.Name())
 		fsize := FileSize{filename, KB, MB}
 		if dsize, ok := output[fromCwd]; ok {
 			dsize.TotalKB += fsize.KB
